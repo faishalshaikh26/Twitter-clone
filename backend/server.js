@@ -1,5 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
+
+import authRoutes from './routes/auth.route.js'
 import connectMongoDB from './db/connectMongoDB.js';
 dotenv.config();
 
@@ -8,11 +10,10 @@ const PORT = process.env.PORT;
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 
-app.get('/', (req, res) => {
-    res.send('Server is ready');
-});
+app.use("/api/auth", authRoutes);
 
 // Start the server
 app.listen(PORT, () => {
