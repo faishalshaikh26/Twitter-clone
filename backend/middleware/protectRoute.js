@@ -3,11 +3,11 @@ import User from '../models/user.model.js';
 
 export const protectRoute = async (req, res, next) => {
     try {
-        // console.log("🔹 protectRoute middleware reached"); // Log this first
+        console.log("🔹 protectRoute middleware reached"); // Log this first
 
         // Check if JWT exists
         const token = req.cookies?.jwt; // Use optional chaining to avoid crashes
-        // console.log("🔹 Token from cookies:", token);
+        //console.log("🔹 Token from cookies:", token);
 
         if (!token) {
             console.log("🚨 No token found in cookies");
@@ -25,7 +25,7 @@ export const protectRoute = async (req, res, next) => {
 
         // Find user using decoded.id or decoded.userId
         const user = await User.findById(decoded.userId).select("-password");
-        // console.log("User found in DB:", user); // Debugging step
+        //console.log("User found in DB:", user); // Debugging step
 
         if (!user) {
             console.log("🚨 User not found in database");
@@ -33,11 +33,11 @@ export const protectRoute = async (req, res, next) => {
         }
 
         req.user = user;
-        // console.log("✅ req.user set successfully:", req.user);
+        //console.log("✅ req.user set successfully:", req.user);
 
         next();
     } catch (error) {
-        console.log("Error in protectRoute middleware", error.message);
+        console.error("Error in protectRoute middleware", error.message);
         return res.status(500).json({ error: "Internal server error" });
     }
 };

@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/me" ,protectRoute, getMe )
 
-// Register route
+// signup route
 router.post('/signup', signup );
 
 // Login route
