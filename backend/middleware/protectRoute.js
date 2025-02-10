@@ -3,7 +3,7 @@ import User from '../models/user.model.js';
 
 export const protectRoute = async (req, res, next) => {
     try {
-        console.log("🔹 protectRoute middleware reached"); // Log this first
+        // console.log("🔹 protectRoute middleware reached"); // Log this first
 
         // Check if JWT exists
         const token = req.cookies?.jwt; // Use optional chaining to avoid crashes
