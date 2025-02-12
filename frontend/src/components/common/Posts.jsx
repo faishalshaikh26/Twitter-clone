@@ -9,9 +9,9 @@ const Posts = ({feedType}) => {
 	const getPostEndpoint = () => {
 		switch (feedType) {
 			case "forYou":
-				return "api/posts/all"
+				return "/api/posts/all"
 			case "following":
-				return "api/posts/following"
+				return "/api/posts/following"
 			default:
 				return "api/posts/all"
 		}
