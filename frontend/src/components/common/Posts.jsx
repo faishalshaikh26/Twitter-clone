@@ -19,21 +19,34 @@ const Posts = ({feedType}) => {
 
 	const POST_ENDPOINT = 	getPostEndpoint()
 
-	const {data: posts , isLoading , refetch , isRefetching} = useQuery({
+	const {
+		data: posts , 
+		isLoading ,
+		refetch , 
+		isRefetching
+	} = useQuery({
 		queryKey: ['posts', feedType],
 		queryFn: async() => {
+			if (!POST_ENDPOINT) return []; // ✅ Ensure valid endpoint
 			try {
 				const res = await fetch(POST_ENDPOINT)
+				// If response is not JSON, throw an error
+				const contentType = res.headers.get("content-type");
+				if (!contentType || !contentType.includes("application/json")) {
+					throw new Error("Received non-JSON response");
+				}
+
 				const data = await res.json();
 
 				if(!res.ok){
 					throw new Error(data.error || "Something went wrong")
 				}
 
-				return data;
+				return data || [];
 
 			} catch (error) {
 				console.error(error);
+				return []; // ✅ Return an empty array instead of undefined
 			}
 		}
 	})
