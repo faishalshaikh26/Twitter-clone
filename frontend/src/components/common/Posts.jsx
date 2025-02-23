@@ -1,59 +1,52 @@
 import Post from "./Post";
 import PostSkeleton from "../skeletons/PostSkeleton";
-import {useQuery} from '@tanstack/react-query'
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-const Posts = ({feedType}) => {
-	//const isLoading = false;
-
+const Posts = ({ feedType, username, userId }) => {
 	const getPostEndpoint = () => {
 		switch (feedType) {
 			case "forYou":
-				return "/api/posts/all"
+				return "/api/posts/all";
 			case "following":
-				return "/api/posts/following"
+				return "/api/posts/following";
+			case "posts":
+				return `/api/posts/user/${username}`;
+			case "likes":
+				return `/api/posts/likes/${userId}`;
 			default:
-				return "api/posts/all"
+				return "/api/posts/all";
 		}
-	}
+	};
 
-	const POST_ENDPOINT = 	getPostEndpoint()
+	const POST_ENDPOINT = getPostEndpoint();
 
 	const {
-		data: posts , 
-		isLoading ,
-		refetch , 
-		isRefetching
+		data: posts,
+		isLoading,
+		refetch,
+		isRefetching,
 	} = useQuery({
-		queryKey: ['posts', feedType],
-		queryFn: async() => {
-			if (!POST_ENDPOINT) return []; // ✅ Ensure valid endpoint
+		queryKey: ["posts"],
+		queryFn: async () => {
 			try {
-				const res = await fetch(POST_ENDPOINT)
-				// If response is not JSON, throw an error
-				const contentType = res.headers.get("content-type");
-				if (!contentType || !contentType.includes("application/json")) {
-					throw new Error("Received non-JSON response");
-				}
-
+				const res = await fetch(POST_ENDPOINT);
 				const data = await res.json();
 
-				if(!res.ok){
-					throw new Error(data.error || "Something went wrong")
+				if (!res.ok) {
+					throw new Error(data.error || "Something went wrong");
 				}
 
-				return data || [];
-
+				return data;
 			} catch (error) {
-				console.error(error);
-				return []; // ✅ Return an empty array instead of undefined
+				throw new Error(error);
 			}
-		}
-	})
+		},
+	});
 
-	useEffect(()=>{
-		refetch()
-	}, [feedType , refetch])
+	useEffect(() => {
+		refetch();
+	}, [feedType, refetch, username]);
 
 	return (
 		<>
@@ -64,7 +57,9 @@ const Posts = ({feedType}) => {
 					<PostSkeleton />
 				</div>
 			)}
-			{!isLoading && !isRefetching && posts?.length === 0 && <p className='text-center my-4'>No posts in this tab. Switch 👻</p>}
+			{!isLoading && !isRefetching && posts?.length === 0 && (
+				<p className='text-center my-4'>No posts in this tab. Switch 👻</p>
+			)}
 			{!isLoading && !isRefetching && posts && (
 				<div>
 					{posts.map((post) => (
