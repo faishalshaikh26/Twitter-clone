@@ -5,7 +5,7 @@ import {v2 as cloudinary } from 'cloudinary'
 
 export const getUserProfile = async (req , res) => {
     const { username } = req.params;
-    console.log("🔹 Fetching profile for:", username);  // Debug log
+    //console.log("🔹 Fetching profile for:", username);  // Debug log
 
     try {
         const user = await User.findOne({username}).select("-password");
